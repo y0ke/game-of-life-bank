@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Player, CurrencyType, PLAYER_COLORS, DEFAULT_INITIAL_AMOUNT, DEFAULT_CURRENCY, MIN_PLAYERS, MAX_PLAYERS, QUICK_AMOUNTS } from '@/types/game'
+import { Player, CurrencyType, PLAYER_COLORS, AVAILABLE_COLORS, DEFAULT_INITIAL_AMOUNT, DEFAULT_CURRENCY, MIN_PLAYERS, MAX_PLAYERS, QUICK_AMOUNTS } from '@/types/game'
 import { formatCurrency } from '@/utils/format'
 import { generateId } from '@/utils/format'
 
@@ -11,6 +11,7 @@ interface GameSetupProps {
 
 export default function GameSetup({ onStartGame }: GameSetupProps) {
   const [playerNames, setPlayerNames] = useState<string[]>(['', ''])
+  const [playerColors, setPlayerColors] = useState<string[]>([PLAYER_COLORS[0], PLAYER_COLORS[1]])
   const [initialAmount, setInitialAmount] = useState(DEFAULT_INITIAL_AMOUNT)
   const [customAmount, setCustomAmount] = useState('')
   const [currency, setCurrency] = useState<CurrencyType>(DEFAULT_CURRENCY)
@@ -19,6 +20,7 @@ export default function GameSetup({ onStartGame }: GameSetupProps) {
   const addPlayer = () => {
     if (playerNames.length < MAX_PLAYERS) {
       setPlayerNames([...playerNames, ''])
+      setPlayerColors([...playerColors, PLAYER_COLORS[playerNames.length]])
     }
   }
 
@@ -26,6 +28,7 @@ export default function GameSetup({ onStartGame }: GameSetupProps) {
   const removePlayer = (index: number) => {
     if (playerNames.length > MIN_PLAYERS) {
       setPlayerNames(playerNames.filter((_, i) => i !== index))
+      setPlayerColors(playerColors.filter((_, i) => i !== index))
     }
   }
 
@@ -34,6 +37,13 @@ export default function GameSetup({ onStartGame }: GameSetupProps) {
     const newNames = [...playerNames]
     newNames[index] = name
     setPlayerNames(newNames)
+  }
+
+  // プレイヤーの色を更新
+  const updatePlayerColor = (index: number, color: string) => {
+    const newColors = [...playerColors]
+    newColors[index] = color
+    setPlayerColors(newColors)
   }
 
   // 初期金額を加算
@@ -67,7 +77,7 @@ export default function GameSetup({ onStartGame }: GameSetupProps) {
       .map((name, index) => ({
         id: generateId('player'),
         name: name.trim() || `プレイヤー${index + 1}`,
-        color: PLAYER_COLORS[index],
+        color: playerColors[index],
         balance: initialAmount,
       }))
       .filter(player => player.name)
@@ -85,8 +95,8 @@ export default function GameSetup({ onStartGame }: GameSetupProps) {
       <div className="w-full animate-fade-in">
         {/* タイトル */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-primary mb-2">人生ゲーム銀行</h1>
-          <p className="text-gray-600">プレイヤーを登録してゲームを開始</p>
+          <h1 className="text-3xl font-bold text-primary mb-2">かんたん銀行役</h1>
+          <p className="text-gray-600">ボードゲームのお金管理をスマホで！</p>
         </div>
 
         {/* プレイヤー登録セクション */}
@@ -95,30 +105,63 @@ export default function GameSetup({ onStartGame }: GameSetupProps) {
 
           <div className="space-y-3">
             {playerNames.map((name, index) => (
-              <div key={index} className="flex items-center gap-2">
-                <div
-                  className="w-6 h-6 rounded-full flex-shrink-0"
-                  style={{ backgroundColor: PLAYER_COLORS[index] }}
-                />
-                <input
-                  type="text"
-                  value={name}
-                  onChange={(e) => updatePlayerName(index, e.target.value)}
-                  placeholder={`プレイヤー${index + 1}`}
-                  className="input flex-1"
-                  maxLength={10}
-                />
-                {playerNames.length > MIN_PLAYERS && (
-                  <button
-                    onClick={() => removePlayer(index)}
-                    className="btn btn-danger p-2"
-                    aria-label="削除"
-                  >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-                )}
+              <div key={index}>
+                <div className="flex items-center gap-2 mb-2">
+                  <div
+                    className="w-8 h-8 rounded-full flex-shrink-0 cursor-pointer border-2 border-gray-300"
+                    style={{ backgroundColor: playerColors[index] }}
+                    onClick={() => {
+                      const colorSelector = document.getElementById(`color-selector-${index}`)
+                      if (colorSelector) {
+                        colorSelector.classList.toggle('hidden')
+                      }
+                    }}
+                  />
+                  <input
+                    type="text"
+                    value={name}
+                    onChange={(e) => updatePlayerName(index, e.target.value)}
+                    placeholder={`プレイヤー${index + 1}`}
+                    className="input flex-1"
+                    maxLength={10}
+                  />
+                  {playerNames.length > MIN_PLAYERS && (
+                    <button
+                      onClick={() => removePlayer(index)}
+                      className="btn btn-danger p-2"
+                      aria-label="削除"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  )}
+                </div>
+                <div id={`color-selector-${index}`} className="hidden ml-10 mb-2">
+                  <p className="text-xs text-gray-600 mb-2">車の色を選択:</p>
+                  <div className="grid grid-cols-6 gap-2">
+                    {AVAILABLE_COLORS.map((colorOption) => (
+                      <button
+                        key={colorOption.value}
+                        onClick={() => {
+                          updatePlayerColor(index, colorOption.value)
+                          const colorSelector = document.getElementById(`color-selector-${index}`)
+                          if (colorSelector) {
+                            colorSelector.classList.add('hidden')
+                          }
+                        }}
+                        className={`w-8 h-8 rounded-full border-2 transition-all ${
+                          playerColors[index] === colorOption.value
+                            ? 'border-gray-800 scale-110'
+                            : 'border-gray-300 hover:scale-105'
+                        }`}
+                        style={{ backgroundColor: colorOption.value }}
+                        title={colorOption.name}
+                        aria-label={colorOption.name}
+                      />
+                    ))}
+                  </div>
+                </div>
               </div>
             ))}
           </div>

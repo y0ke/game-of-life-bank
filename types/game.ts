@@ -31,16 +31,36 @@ export interface GameState {
   isGameEnded?: boolean
 }
 
-// プレイヤーカラーの定義
+// プレイヤーカラーの定義（人生ゲームの車の色に近い色）
 export const PLAYER_COLORS = [
-  '#FF6B6B', // 赤
-  '#4ECDC4', // 青緑
-  '#95E77E', // 黄緑
-  '#FFA07A', // オレンジ
-  '#87CEEB', // 空色
-  '#DDA0DD', // 紫
-  '#F0E68C', // 黄
-  '#FFB6C1', // ピンク
+  '#E74C3C', // 赤
+  '#3498DB', // 青
+  '#F1C40F', // 黄
+  '#2ECC71', // 緑
+  '#9B59B6', // 紫
+  '#E67E22', // オレンジ
+  '#1ABC9C', // ターコイズ
+  '#EC407A', // ピンク
+  '#34495E', // ダークグレー
+  '#95A5A6', // グレー
+  '#16A085', // エメラルド
+  '#D35400', // 濃いオレンジ
+]
+
+// 利用可能な色の選択肢（人生ゲームの車の色に対応）
+export const AVAILABLE_COLORS = [
+  { name: '赤', value: '#E74C3C' },
+  { name: '青', value: '#3498DB' },
+  { name: '黄色', value: '#F1C40F' },
+  { name: '緑', value: '#2ECC71' },
+  { name: '紫', value: '#9B59B6' },
+  { name: 'オレンジ', value: '#E67E22' },
+  { name: 'ターコイズ', value: '#1ABC9C' },
+  { name: 'ピンク', value: '#EC407A' },
+  { name: '黒', value: '#34495E' },
+  { name: 'グレー', value: '#95A5A6' },
+  { name: 'エメラルド', value: '#16A085' },
+  { name: '茶色', value: '#D35400' },
 ]
 
 // クイック金額ボタンの値

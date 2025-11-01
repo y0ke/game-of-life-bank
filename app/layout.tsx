@@ -2,8 +2,8 @@ import type { Metadata } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: '人生ゲーム銀行',
-  description: '人生ゲームの銀行管理アプリ',
+  title: 'かんたん銀行役 - ボードゲームのお金管理アプリ',
+  description: '人生ゲームやモノポリーなどボードゲームの銀行役をスマホで！紙幣の数え間違いや紛失とはさようなら。',
   manifest: '/manifest.json',
 }
 

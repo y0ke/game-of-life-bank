@@ -1,7 +1,7 @@
 {
-  "name": "人生ゲーム銀行",
-  "short_name": "ゲーム銀行",
-  "description": "人生ゲームの銀行管理アプリ",
+  "name": "かんたん銀行役",
+  "short_name": "銀行役",
+  "description": "ボードゲームのお金管理をスマホで簡単に",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#f8f9fa",
