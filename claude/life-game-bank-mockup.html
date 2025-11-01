@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>人生ゲーム銀行 - モックデザイン</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* スタート画面 */
+        .screen {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .logo h1 {
+            font-size: 32px;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .logo .subtitle {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .player-list {
+            margin: 20px 0;
+        }
+        
+        .player-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            margin-bottom: 10px;
+        }
+        
+        .player-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            margin-right: 15px;
+            font-size: 18px;
+        }
+        
+        .player-name {
+            flex: 1;
+            font-size: 16px;
+            font-weight: 500;
+        }
+        
+        .player-remove {
+            color: #dc3545;
+            cursor: pointer;
+            padding: 5px;
+        }
+        
+        .add-player {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .add-player input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+        }
+        
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #5568d3;
+        }
+        
+        .btn-block {
+            width: 100%;
+            padding: 15px;
+            margin-top: 20px;
+        }
+        
+        /* メイン銀行画面 */
+        .bank-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 20px 20px 0 0;
+            margin: -30px -30px 20px -30px;
+        }
+        
+        .bank-title {
+            font-size: 24px;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        .total-money {
+            text-align: center;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .player-cards {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding: 20px 0;
+            margin: 0 -30px;
+            padding-left: 30px;
+            padding-right: 30px;
+        }
+        
+        .player-card {
+            min-width: 150px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 3px solid transparent;
+        }
+        
+        .player-card.active {
+            background: white;
+            border-color: #667eea;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .player-card-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin: 0 auto 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            font-size: 20px;
+        }
+        
+        .player-card-name {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .player-card-balance {
+            font-size: 18px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        /* 取引セクション */
+        .transaction-section {
+            margin: 30px 0;
+        }
+        
+        .transaction-type {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .transaction-type button {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            background: white;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .transaction-type button.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        
+        .quick-amounts {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .amount-btn {
+            padding: 20px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .amount-btn:hover {
+            background: #f8f9fa;
+            border-color: #667eea;
+        }
+        
+        .custom-amount {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .custom-amount input {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 18px;
+            text-align: center;
+        }
+        
+        /* 他プレイヤーへの送金 */
+        .transfer-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+        }
+        
+        .transfer-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #666;
+        }
+        
+        .transfer-players {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .transfer-player-btn {
+            padding: 10px 15px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .transfer-player-btn:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+        
+        /* 履歴画面 */
+        .history-list {
+            margin-top: 20px;
+        }
+        
+        .history-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            margin-bottom: 10px;
+        }
+        
+        .history-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 20px;
+        }
+        
+        .history-icon.income {
+            background: #d4edda;
+            color: #28a745;
+        }
+        
+        .history-icon.expense {
+            background: #f8d7da;
+            color: #dc3545;
+        }
+        
+        .history-details {
+            flex: 1;
+        }
+        
+        .history-description {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 3px;
+        }
+        
+        .history-time {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .history-amount {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .history-amount.income {
+            color: #28a745;
+        }
+        
+        .history-amount.expense {
+            color: #dc3545;
+        }
+        
+        /* ナビゲーションタブ */
+        .nav-tabs {
+            display: flex;
+            background: white;
+            border-radius: 15px;
+            padding: 5px;
+            margin-top: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .nav-tab {
+            flex: 1;
+            padding: 12px;
+            background: transparent;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: #666;
+        }
+        
+        .nav-tab.active {
+            background: #667eea;
+            color: white;
+        }
+        
+        /* レスポンシブ対応 */
+        @media (max-width: 480px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .screen {
+                padding: 20px;
+            }
+            
+            .quick-amounts {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        /* アニメーション */
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        .screen {
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        /* スワイプヒント */
+        .swipe-hint {
+            text-align: center;
+            color: #999;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+        
+        .colors-demo {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            justify-content: center;
+        }
+        
+        .color-sample {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- スタート画面のモック -->
+        <div class="screen">
+            <div class="logo">
+                <h1>💰 人生ゲーム銀行</h1>
+                <div class="subtitle">かんたんお金管理</div>
+            </div>
+            
+            <h3 style="margin-bottom: 15px;">プレイヤー登録</h3>
+            
+            <div class="player-list">
+                <div class="player-item">
+                    <div class="player-avatar" style="background: #FF6B6B;">た</div>
+                    <div class="player-name">たろう</div>
+                    <div class="player-remove">✕</div>
+                </div>
+                <div class="player-item">
+                    <div class="player-avatar" style="background: #4ECDC4;">は</div>
+                    <div class="player-name">はなこ</div>
+                    <div class="player-remove">✕</div>
+                </div>
+            </div>
+            
+            <div class="add-player">
+                <input type="text" placeholder="名前を入力">
+                <button class="btn btn-primary">追加</button>
+            </div>
+            
+            <button class="btn btn-primary btn-block">ゲーム開始</button>
+            
+            <div style="margin-top: 20px; padding: 15px; background: #f0f4ff; border-radius: 10px;">
+                <strong>初期設定オプション：</strong>
+                <div style="margin-top: 10px;">
+                    初期所持金：<input type="number" value="200000" style="width: 100px; margin-left: 10px;">円
+                </div>
+            </div>
+        </div>
+        
+        <!-- メイン銀行画面のモック -->
+        <div class="screen">
+            <div class="bank-header">
+                <div class="bank-title">💰 人生ゲーム銀行</div>
+                <div class="total-money">総流通額: ¥1,000,000</div>
+            </div>
+            
+            <div class="player-cards">
+                <div class="player-card active">
+                    <div class="player-card-avatar" style="background: #FF6B6B;">た</div>
+                    <div class="player-card-name">たろう</div>
+                    <div class="player-card-balance">¥200,000</div>
+                </div>
+                <div class="player-card">
+                    <div class="player-card-avatar" style="background: #4ECDC4;">は</div>
+                    <div class="player-card-name">はなこ</div>
+                    <div class="player-card-balance">¥200,000</div>
+                </div>
+                <div class="player-card">
+                    <div class="player-card-avatar" style="background: #95E77E;">じ</div>
+                    <div class="player-card-name">じろう</div>
+                    <div class="player-card-balance">¥200,000</div>
+                </div>
+            </div>
+            
+            <div class="swipe-hint">← スワイプでプレイヤー切替 →</div>
+            
+            <div class="transaction-section">
+                <div class="transaction-type">
+                    <button class="active">💰 銀行から受取</button>
+                    <button>💸 銀行へ支払</button>
+                </div>
+                
+                <div class="quick-amounts">
+                    <button class="amount-btn">¥10,000</button>
+                    <button class="amount-btn">¥20,000</button>
+                    <button class="amount-btn">¥30,000</button>
+                    <button class="amount-btn">¥50,000</button>
+                    <button class="amount-btn">¥100,000</button>
+                    <button class="amount-btn">¥200,000</button>
+                </div>
+                
+                <div class="custom-amount">
+                    <input type="number" placeholder="金額を入力">
+                    <button class="btn btn-primary">実行</button>
+                </div>
+            </div>
+            
+            <div class="transfer-section">
+                <div class="transfer-title">他のプレイヤーへ送金</div>
+                <div class="transfer-players">
+                    <button class="transfer-player-btn">→ はなこ</button>
+                    <button class="transfer-player-btn">→ じろう</button>
+                </div>
+            </div>
+            
+            <div class="nav-tabs">
+                <button class="nav-tab active">銀行</button>
+                <button class="nav-tab">履歴</button>
+                <button class="nav-tab">統計</button>
+            </div>
+        </div>
+        
+        <!-- 履歴画面のモック -->
+        <div class="screen">
+            <h2 style="margin-bottom: 20px;">取引履歴</h2>
+            
+            <div class="history-list">
+                <div class="history-item">
+                    <div class="history-icon income">↓</div>
+                    <div class="history-details">
+                        <div class="history-description">給料日（銀行から）</div>
+                        <div class="history-time">たろう • 5分前</div>
+                    </div>
+                    <div class="history-amount income">+¥50,000</div>
+                </div>
+                
+                <div class="history-item">
+                    <div class="history-icon expense">↑</div>
+                    <div class="history-details">
+                        <div class="history-description">税金（銀行へ）</div>
+                        <div class="history-time">はなこ • 8分前</div>
+                    </div>
+                    <div class="history-amount expense">-¥30,000</div>
+                </div>
+                
+                <div class="history-item">
+                    <div class="history-icon income">→</div>
+                    <div class="history-details">
+                        <div class="history-description">送金（たろう → はなこ）</div>
+                        <div class="history-time">10分前</div>
+                    </div>
+                    <div class="history-amount expense">¥20,000</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- デザイン説明 -->
+        <div class="screen">
+            <h2 style="margin-bottom: 20px;">🎨 デザインコンセプト</h2>
+            
+            <h3 style="margin-top: 20px; margin-bottom: 10px;">特徴：</h3>
+            <ul style="padding-left: 20px; line-height: 1.8;">
+                <li><strong>モバイルファースト：</strong> スマホでの操作を最優先に設計</li>
+                <li><strong>直感的な操作：</strong> タップとスワイプだけで完結</li>
+                <li><strong>視認性：</strong> 大きな文字と明確な色分け</li>
+                <li><strong>楽しさ：</strong> グラデーションとアニメーションで楽しい雰囲気</li>
+            </ul>
+            
+            <h3 style="margin-top: 20px; margin-bottom: 10px;">主な機能：</h3>
+            <ol style="padding-left: 20px; line-height: 1.8;">
+                <li>プレイヤー登録（2〜8人まで）</li>
+                <li>銀行からの入出金（クイック金額ボタン）</li>
+                <li>プレイヤー間送金</li>
+                <li>取引履歴の確認</li>
+                <li>ゲーム終了時の順位表示</li>
+            </ol>
+            
+            <h3 style="margin-top: 20px; margin-bottom: 10px;">カラーパレット：</h3>
+            <div class="colors-demo">
+                <div class="color-sample" style="background: #667eea;"></div>
+                <div class="color-sample" style="background: #764ba2;"></div>
+                <div class="color-sample" style="background: #28a745;"></div>
+                <div class="color-sample" style="background: #dc3545;"></div>
+                <div class="color-sample" style="background: #f8f9fa;"></div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
