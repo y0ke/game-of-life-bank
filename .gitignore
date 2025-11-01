@@ -33,3 +33,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# claude code
+.claude/claude-code-requirements.txt
+.claude/settings.local.json
+claude/claude-code-requirements.txt
+claude/life-game-bank-mockup.html
