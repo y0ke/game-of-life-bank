@@ -199,9 +199,9 @@ export default function BankScreen({
           <h3 className="text-xs font-medium text-gray-600 mb-2">プレイヤー</h3>
           <div
             ref={playerCardsRef}
-            className="grid gap-2 md:gap-3 pb-2"
+            className="grid gap-2 md:gap-4 pb-2"
             style={{
-              gridTemplateColumns: `repeat(${players.length}, minmax(120px, 1fr))`,
+              gridTemplateColumns: `repeat(${players.length}, minmax(150px, 1fr))`,
               maxWidth: '100%'
             }}
           >
@@ -218,8 +218,7 @@ export default function BankScreen({
                   }
                 `}
                 style={{
-                  borderTop: `3px solid ${player.color}`,
-                  maxWidth: '200px'
+                  borderTop: `3px solid ${player.color}`
                 }}
               >
                 <div className="flex flex-col items-center">
