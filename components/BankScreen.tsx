@@ -195,8 +195,8 @@ export default function BankScreen({
 
       {/* プレイヤーカード */}
       <div className="bg-gray-50 overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 py-3">
-          <h3 className="text-xs font-medium text-gray-600 mb-2">プレイヤー</h3>
+        <div className="max-w-7xl mx-auto px-4 py-2">
+          <h3 className="text-xs font-medium text-gray-600 mb-1">プレイヤー</h3>
           <div
             ref={playerCardsRef}
             className="grid gap-2 md:gap-4 pb-2"
@@ -211,7 +211,7 @@ export default function BankScreen({
                 data-player-id={player.id}
                 onClick={() => setSelectedPlayerId(player.id)}
                 className={`
-                  bg-white rounded-lg p-2 md:p-3 cursor-pointer transition-all duration-200
+                  bg-white rounded-lg p-1.5 md:p-3 cursor-pointer transition-all duration-200
                   ${selectedPlayerId === player.id
                     ? 'ring-2 ring-primary shadow-lg'
                     : 'hover:shadow-md'
@@ -223,11 +223,11 @@ export default function BankScreen({
               >
                 <div className="flex flex-col items-center">
                   <div
-                    className="w-8 h-8 md:w-12 md:h-12 rounded-full mb-1 md:mb-2 flex-shrink-0"
+                    className="w-6 h-6 md:w-12 md:h-12 rounded-full mb-0.5 md:mb-2 flex-shrink-0"
                     style={{ backgroundColor: player.color }}
                   />
                   <p className="font-bold text-xs md:text-sm text-gray-900 truncate w-full text-center">{player.name}</p>
-                  <p className={`text-sm md:text-base font-bold mt-1 ${player.balance < 0 ? 'text-error' : 'text-gray-900'}`}>
+                  <p className={`text-sm md:text-base font-bold mt-0.5 ${player.balance < 0 ? 'text-error' : 'text-gray-900'}`}>
                     {formatCurrency(player.balance, currency)}
                   </p>
                 </div>
@@ -238,29 +238,29 @@ export default function BankScreen({
       </div>
 
       {/* 取引タイプ選択 */}
-      <div className="px-4 mb-4">
+      <div className="px-4 mb-3">
         <div className="max-w-7xl mx-auto">
-          <h3 className="text-sm font-medium text-gray-600 mb-2">取引タイプ</h3>
-          <div className="flex gap-3 md:gap-4">
+          <h3 className="text-xs font-medium text-gray-600 mb-1">取引タイプ</h3>
+          <div className="flex gap-2 md:gap-4">
             <button
               onClick={() => setTransactionType('income')}
               className={`transaction-type-btn ${transactionType === 'income' ? 'transaction-type-btn-income-active' : 'transaction-type-btn-inactive'}`}
             >
-              <svg className="w-6 h-6 md:w-8 md:h-8 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 md:w-8 md:h-8 mb-0.5 md:mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
               </svg>
-              <span className="text-sm md:text-lg font-bold">お金を受け取る</span>
-              <span className="text-xs md:text-sm text-gray-600 mt-0.5">（銀行 → プレイヤー）</span>
+              <span className="text-xs md:text-lg font-bold">お金を受け取る</span>
+              <span className="text-[10px] md:text-sm text-gray-600 mt-0">（銀行 → プレイヤー）</span>
             </button>
             <button
               onClick={() => setTransactionType('payment')}
               className={`transaction-type-btn ${transactionType === 'payment' ? 'transaction-type-btn-payment-active' : 'transaction-type-btn-inactive'}`}
             >
-              <svg className="w-6 h-6 md:w-8 md:h-8 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 md:w-8 md:h-8 mb-0.5 md:mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M20 12H4m16 0l-8-8m8 8l-8 8" />
               </svg>
-              <span className="text-sm md:text-lg font-bold">お金を支払う</span>
-              <span className="text-xs md:text-sm text-gray-600 mt-0.5">（プレイヤー → 銀行）</span>
+              <span className="text-xs md:text-lg font-bold">お金を支払う</span>
+              <span className="text-[10px] md:text-sm text-gray-600 mt-0">（プレイヤー → 銀行）</span>
             </button>
           </div>
         </div>
