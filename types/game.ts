@@ -19,6 +19,7 @@ export interface Transaction {
   amount: number
   timestamp: string
   playerName?: string // 表示用のプレイヤー名
+  toPlayerName?: string // 送金先プレイヤー名（transferの場合）
 }
 
 export interface GameState {

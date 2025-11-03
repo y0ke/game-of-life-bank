@@ -23,7 +23,7 @@ export default function BankScreen({
   canUndo,
 }: BankScreenProps) {
   const [selectedPlayerId, setSelectedPlayerId] = useState<string>(players[0]?.id || '')
-  const [transactionType, setTransactionType] = useState<'income' | 'payment'>('income')
+  const [transactionType, setTransactionType] = useState<'income' | 'payment' | 'collect'>('income')
   const [amount, setAmount] = useState<number>(0)
   const [customAmount, setCustomAmount] = useState<string>('')
   const [showTransferModal, setShowTransferModal] = useState(false)
@@ -98,21 +98,45 @@ export default function BankScreen({
   const handleTransaction = () => {
     if (!selectedPlayer || amount <= 0) return
 
-    const transaction: Transaction = {
-      id: generateId('trans'),
-      type: transactionType === 'income' ? 'bank_income' : 'bank_payment',
-      from: transactionType === 'income' ? 'bank' : selectedPlayer.id,
-      to: transactionType === 'income' ? selectedPlayer.id : 'bank',
-      amount,
-      timestamp: new Date().toISOString(),
-      playerName: selectedPlayer.name,
+    if (transactionType === 'collect') {
+      // 徴収: 他の全プレイヤーから金額を徴収
+      const otherPlayers = players.filter(p => p.id !== selectedPlayer.id)
+
+      // 各プレイヤーから徴収する取引を作成
+      otherPlayers.forEach(player => {
+        const transaction: Transaction = {
+          id: generateId('trans'),
+          type: 'transfer',
+          from: player.id,
+          to: selectedPlayer.id,
+          amount,
+          timestamp: new Date().toISOString(),
+          playerName: player.name,
+          toPlayerName: selectedPlayer.name,
+        }
+        onTransaction(transaction)
+      })
+
+      // 成功メッセージを表示
+      const totalCollected = amount * otherPlayers.length
+      showSuccess(`${selectedPlayer.name}が各プレイヤーから${formatCurrency(amount, currency)}ずつ徴収しました（合計: ${formatCurrency(totalCollected, currency)}）`)
+    } else {
+      const transaction: Transaction = {
+        id: generateId('trans'),
+        type: transactionType === 'income' ? 'bank_income' : 'bank_payment',
+        from: transactionType === 'income' ? 'bank' : selectedPlayer.id,
+        to: transactionType === 'income' ? selectedPlayer.id : 'bank',
+        amount,
+        timestamp: new Date().toISOString(),
+        playerName: selectedPlayer.name,
+      }
+
+      onTransaction(transaction)
+
+      // 成功メッセージを表示
+      const action = transactionType === 'income' ? '受取' : '支払'
+      showSuccess(`${selectedPlayer.name}が${formatCurrency(amount, currency)}を${action}しました`)
     }
-
-    onTransaction(transaction)
-
-    // 成功メッセージを表示
-    const action = transactionType === 'income' ? '受取' : '支払'
-    showSuccess(`${selectedPlayer.name}が${formatCurrency(amount, currency)}を${action}しました`)
 
     // リセット
     setAmount(0)
@@ -213,12 +237,13 @@ export default function BankScreen({
                 className={`
                   bg-white rounded-lg p-1.5 md:p-3 cursor-pointer transition-all duration-200
                   ${selectedPlayerId === player.id
-                    ? 'ring-2 ring-primary shadow-lg'
+                    ? 'ring-2 shadow-lg'
                     : 'hover:shadow-md'
                   }
                 `}
                 style={{
-                  borderTop: `3px solid ${player.color}`
+                  borderTop: `3px solid ${player.color}`,
+                  ...(selectedPlayerId === player.id ? { '--tw-ring-color': player.color } as any : {})
                 }}
               >
                 <div className="flex flex-col items-center">
@@ -241,26 +266,36 @@ export default function BankScreen({
       <div className="px-4 mb-3">
         <div className="max-w-7xl mx-auto">
           <h3 className="text-xs font-medium text-gray-600 mb-1">取引タイプ</h3>
-          <div className="flex gap-2 md:gap-4">
+          <div className="grid grid-cols-3 gap-1.5 md:gap-4">
             <button
               onClick={() => setTransactionType('income')}
               className={`transaction-type-btn ${transactionType === 'income' ? 'transaction-type-btn-income-active' : 'transaction-type-btn-inactive'}`}
             >
-              <svg className="w-5 h-5 md:w-8 md:h-8 mb-0.5 md:mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 md:w-8 md:h-8 mb-0.5 md:mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
               </svg>
-              <span className="text-xs md:text-lg font-bold">お金を受け取る</span>
-              <span className="text-[10px] md:text-sm text-gray-600 mt-0">（銀行 → プレイヤー）</span>
+              <span className="text-[10px] md:text-lg font-bold leading-tight">受け取る</span>
+              <span className="text-[8px] md:text-sm text-gray-600 mt-0 leading-tight">（銀行→自分）</span>
             </button>
             <button
               onClick={() => setTransactionType('payment')}
               className={`transaction-type-btn ${transactionType === 'payment' ? 'transaction-type-btn-payment-active' : 'transaction-type-btn-inactive'}`}
             >
-              <svg className="w-5 h-5 md:w-8 md:h-8 mb-0.5 md:mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 md:w-8 md:h-8 mb-0.5 md:mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M20 12H4m16 0l-8-8m8 8l-8 8" />
               </svg>
-              <span className="text-xs md:text-lg font-bold">お金を支払う</span>
-              <span className="text-[10px] md:text-sm text-gray-600 mt-0">（プレイヤー → 銀行）</span>
+              <span className="text-[10px] md:text-lg font-bold leading-tight">支払う</span>
+              <span className="text-[8px] md:text-sm text-gray-600 mt-0 leading-tight">（自分→銀行）</span>
+            </button>
+            <button
+              onClick={() => setTransactionType('collect')}
+              className={`transaction-type-btn ${transactionType === 'collect' ? 'transaction-type-btn-collect-active' : 'transaction-type-btn-inactive'}`}
+            >
+              <svg className="w-4 h-4 md:w-8 md:h-8 mb-0.5 md:mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+              <span className="text-[10px] md:text-lg font-bold leading-tight">徴収</span>
+              <span className="text-[8px] md:text-sm text-gray-600 mt-0 leading-tight">（全員→自分）</span>
             </button>
           </div>
         </div>
